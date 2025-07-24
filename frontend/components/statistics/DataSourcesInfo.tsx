@@ -31,8 +31,8 @@ const DataSourcesInfo: React.FC = () => {
     const fetchDataSources = async () => {
       try {
         setLoading(true);
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-        const response = await fetch(`${apiUrl}/statistics/data-sources`);
+        // Use local API endpoint for data sources
+        const response = await fetch('/api/statistics/data-sources');
         
         if (!response.ok) {
           throw new Error('Failed to fetch data sources information');

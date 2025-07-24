@@ -73,11 +73,10 @@ const StatisticsDashboard: React.FC = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-        
+        // Use local API endpoints for statistics data
         const [statsResponse, trendsResponse] = await Promise.all([
-          fetch(`${apiUrl}/statistics/overview`),
-          fetch(`${apiUrl}/statistics/trends`)
+          fetch('/api/statistics/overview'),
+          fetch('/api/statistics/trends')
         ]);
 
         if (!statsResponse.ok || !trendsResponse.ok) {

@@ -18,8 +18,8 @@ const StatisticsPreview: React.FC = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-        const response = await fetch(`${apiUrl}/statistics/overview`);
+        // Use local API endpoint for statistics
+        const response = await fetch('/api/statistics/overview');
         
         if (response.ok) {
           const data = await response.json();
