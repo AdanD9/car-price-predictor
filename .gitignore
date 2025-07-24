@@ -69,3 +69,11 @@ Thumbs.db
 # SSL certificates (will be generated on server)
 ssl/
 certbot-webroot/
+
+# Large data files
+cars_df.parquet
+used_cars_data.csv
+*.parquet
+*.csv
+backend/catboost_model.cbm
+*.cbm
