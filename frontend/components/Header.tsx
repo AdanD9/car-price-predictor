@@ -18,6 +18,10 @@ const links: {
     label: "Get Prediction",
   },
   {
+    href: "/statistics",
+    label: "Market Stats",
+  },
+  {
     href: "/#features",
     label: "How It Works",
   },

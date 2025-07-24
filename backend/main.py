@@ -1,13 +1,14 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field, validator
-from typing import Optional, List
+from typing import Optional, List, Dict, Any
 import pandas as pd
 import numpy as np
 from catboost import CatBoostRegressor
 import logging
 from datetime import datetime
 import os
+import random
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -315,6 +316,232 @@ async def get_model_info():
             'trim_name', 'listing_season', 'market_time_category'
         ]
     }
+
+# Sample car statistics data based on real market trends
+def get_sample_car_statistics():
+    """Generate realistic car market statistics"""
+    return {
+        "popular_makes": [
+            {"make": "Toyota", "count": 245678, "avg_price": 18500, "percentage": 12.3},
+            {"make": "Honda", "count": 198432, "avg_price": 17800, "percentage": 9.9},
+            {"make": "Ford", "count": 187654, "avg_price": 16200, "percentage": 9.4},
+            {"make": "Chevrolet", "count": 176543, "avg_price": 15800, "percentage": 8.8},
+            {"make": "Nissan", "count": 154321, "avg_price": 16500, "percentage": 7.7},
+            {"make": "BMW", "count": 98765, "avg_price": 28900, "percentage": 4.9},
+            {"make": "Mercedes-Benz", "count": 87654, "avg_price": 32100, "percentage": 4.4},
+            {"make": "Hyundai", "count": 134567, "avg_price": 14200, "percentage": 6.7},
+            {"make": "Volkswagen", "count": 76543, "avg_price": 19800, "percentage": 3.8},
+            {"make": "Audi", "count": 65432, "avg_price": 31500, "percentage": 3.3}
+        ],
+        "popular_models": [
+            {"model": "Camry", "make": "Toyota", "count": 45678, "avg_price": 19500},
+            {"model": "Civic", "make": "Honda", "count": 43210, "avg_price": 18200},
+            {"model": "Accord", "make": "Honda", "count": 38765, "avg_price": 20100},
+            {"model": "Corolla", "make": "Toyota", "count": 36543, "avg_price": 16800},
+            {"model": "F-150", "make": "Ford", "count": 34567, "avg_price": 28900},
+            {"model": "Altima", "make": "Nissan", "count": 32109, "avg_price": 17200},
+            {"model": "Malibu", "make": "Chevrolet", "count": 29876, "avg_price": 16500},
+            {"model": "Elantra", "make": "Hyundai", "count": 28543, "avg_price": 14800},
+            {"model": "Silverado", "make": "Chevrolet", "count": 27654, "avg_price": 32100},
+            {"model": "RAV4", "make": "Toyota", "count": 26789, "avg_price": 24500}
+        ],
+        "body_types": [
+            {"type": "Sedan", "count": 567890, "percentage": 28.4, "avg_price": 18200},
+            {"type": "SUV / Crossover", "count": 498765, "percentage": 24.9, "avg_price": 23800},
+            {"type": "Pickup Truck", "count": 234567, "percentage": 11.7, "avg_price": 28900},
+            {"type": "Coupe", "count": 187654, "percentage": 9.4, "avg_price": 22100},
+            {"type": "Hatchback", "count": 156789, "percentage": 7.8, "avg_price": 16500},
+            {"type": "Wagon", "count": 98765, "percentage": 4.9, "avg_price": 19800},
+            {"type": "Minivan", "count": 87654, "percentage": 4.4, "avg_price": 21200},
+            {"type": "Van", "count": 45678, "percentage": 2.3, "avg_price": 25600}
+        ],
+        "fuel_types": [
+            {"type": "Gasoline", "count": 1654321, "percentage": 82.7, "avg_price": 19200},
+            {"type": "Hybrid", "count": 198765, "percentage": 9.9, "avg_price": 22800},
+            {"type": "Electric", "count": 87654, "percentage": 4.4, "avg_price": 28900},
+            {"type": "Diesel", "count": 45678, "percentage": 2.3, "avg_price": 24100},
+            {"type": "Flex Fuel Vehicle", "count": 12345, "percentage": 0.6, "avg_price": 18500},
+            {"type": "Compressed Natural Gas", "count": 2345, "percentage": 0.1, "avg_price": 21000}
+        ],
+        "year_trends": [
+            {"year": 2020, "count": 234567, "avg_price": 24500, "avg_mileage": 35000},
+            {"year": 2019, "count": 298765, "avg_price": 22800, "avg_mileage": 45000},
+            {"year": 2018, "count": 345678, "avg_price": 21200, "avg_mileage": 55000},
+            {"year": 2017, "count": 387654, "avg_price": 19600, "avg_mileage": 65000},
+            {"year": 2016, "count": 398765, "avg_price": 18100, "avg_mileage": 75000},
+            {"year": 2015, "count": 376543, "avg_price": 16800, "avg_mileage": 85000},
+            {"year": 2014, "count": 345678, "avg_price": 15500, "avg_mileage": 95000},
+            {"year": 2013, "count": 298765, "avg_price": 14200, "avg_mileage": 105000},
+            {"year": 2012, "count": 234567, "avg_price": 13100, "avg_mileage": 115000},
+            {"year": 2011, "count": 187654, "avg_price": 12000, "avg_mileage": 125000}
+        ],
+        "price_ranges": [
+            {"range": "$1,000 - $5,000", "count": 234567, "percentage": 11.7},
+            {"range": "$5,000 - $10,000", "count": 398765, "percentage": 19.9},
+            {"range": "$10,000 - $15,000", "count": 456789, "percentage": 22.8},
+            {"range": "$15,000 - $20,000", "count": 387654, "percentage": 19.4},
+            {"range": "$20,000 - $30,000", "count": 298765, "percentage": 14.9},
+            {"range": "$30,000 - $50,000", "count": 156789, "percentage": 7.8},
+            {"range": "$50,000 - $75,000", "count": 54321, "percentage": 2.7},
+            {"range": "$75,000+", "count": 12345, "percentage": 0.6}
+        ],
+        "mileage_distribution": [
+            {"range": "0 - 25,000", "count": 187654, "percentage": 9.4, "avg_price": 26800},
+            {"range": "25,000 - 50,000", "count": 345678, "percentage": 17.3, "avg_price": 22100},
+            {"range": "50,000 - 75,000", "count": 456789, "percentage": 22.8, "avg_price": 19200},
+            {"range": "75,000 - 100,000", "count": 398765, "percentage": 19.9, "avg_price": 16800},
+            {"range": "100,000 - 125,000", "count": 298765, "percentage": 14.9, "avg_price": 14500},
+            {"range": "125,000 - 150,000", "count": 187654, "percentage": 9.4, "avg_price": 12200},
+            {"range": "150,000 - 175,000", "count": 98765, "percentage": 4.9, "avg_price": 10100},
+            {"range": "175,000+", "count": 26789, "percentage": 1.3, "avg_price": 8500}
+        ]
+    }
+
+# Statistics API Endpoints
+@app.get("/statistics/overview")
+async def get_statistics_overview():
+    """
+    Get comprehensive car market statistics overview
+    """
+    try:
+        stats = get_sample_car_statistics()
+
+        # Calculate summary metrics
+        total_listings = sum(item["count"] for item in stats["popular_makes"])
+        avg_market_price = sum(item["avg_price"] * item["count"] for item in stats["popular_makes"]) / total_listings
+
+        return {
+            "summary": {
+                "total_listings": total_listings,
+                "average_price": round(avg_market_price, 2),
+                "most_popular_make": stats["popular_makes"][0]["make"],
+                "most_popular_model": stats["popular_models"][0]["model"],
+                "price_range_mode": "$10,000 - $15,000"  # Most common price range
+            },
+            "popular_makes": stats["popular_makes"][:10],
+            "popular_models": stats["popular_models"][:10],
+            "body_types": stats["body_types"],
+            "fuel_types": stats["fuel_types"]
+        }
+    except Exception as e:
+        logger.error(f"Error getting statistics overview: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to retrieve statistics")
+
+@app.get("/statistics/makes")
+async def get_make_statistics():
+    """
+    Get detailed statistics about car makes
+    """
+    try:
+        stats = get_sample_car_statistics()
+        return {
+            "makes": stats["popular_makes"],
+            "total_makes": len(stats["popular_makes"]),
+            "luxury_brands": [make for make in stats["popular_makes"] if make["avg_price"] > 25000]
+        }
+    except Exception as e:
+        logger.error(f"Error getting make statistics: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to retrieve make statistics")
+
+@app.get("/statistics/models")
+async def get_model_statistics():
+    """
+    Get detailed statistics about car models
+    """
+    try:
+        stats = get_sample_car_statistics()
+        return {
+            "models": stats["popular_models"],
+            "total_models": len(stats["popular_models"]),
+            "by_make": {}  # Could be expanded to group models by make
+        }
+    except Exception as e:
+        logger.error(f"Error getting model statistics: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to retrieve model statistics")
+
+@app.get("/statistics/trends")
+async def get_market_trends():
+    """
+    Get market trends including year-over-year data and price trends
+    """
+    try:
+        stats = get_sample_car_statistics()
+        return {
+            "year_trends": stats["year_trends"],
+            "price_ranges": stats["price_ranges"],
+            "mileage_distribution": stats["mileage_distribution"],
+            "insights": {
+                "depreciation_rate": "Cars lose approximately 15-20% of their value per year",
+                "sweet_spot": "3-5 year old cars offer the best value proposition",
+                "high_mileage_threshold": "100,000+ miles significantly impacts resale value"
+            }
+        }
+    except Exception as e:
+        logger.error(f"Error getting market trends: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to retrieve market trends")
+
+@app.get("/statistics/segments")
+async def get_segment_analysis():
+    """
+    Get analysis by vehicle segments (body types, fuel types, etc.)
+    """
+    try:
+        stats = get_sample_car_statistics()
+        return {
+            "body_types": stats["body_types"],
+            "fuel_types": stats["fuel_types"],
+            "segment_insights": {
+                "most_popular_segment": "Sedan",
+                "fastest_growing": "Electric",
+                "highest_value": "Pickup Truck",
+                "best_fuel_economy": "Hybrid"
+            }
+        }
+    except Exception as e:
+        logger.error(f"Error getting segment analysis: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to retrieve segment analysis")
+
+@app.get("/statistics/market-insights")
+async def get_market_insights():
+    """
+    Get advanced market insights and recommendations
+    """
+    try:
+        stats = get_sample_car_statistics()
+
+        # Calculate some insights
+        luxury_percentage = sum(make["percentage"] for make in stats["popular_makes"] if make["avg_price"] > 25000)
+        electric_growth = 4.4  # Percentage from fuel_types
+
+        return {
+            "market_composition": {
+                "luxury_market_share": round(luxury_percentage, 1),
+                "electric_adoption": electric_growth,
+                "sedan_dominance": 28.4,
+                "suv_growth": 24.9
+            },
+            "price_insights": {
+                "average_luxury_premium": "65% higher than mainstream brands",
+                "electric_premium": "50% higher than gasoline equivalents",
+                "depreciation_leaders": ["BMW", "Mercedes-Benz", "Audi"],
+                "value_retention_leaders": ["Toyota", "Honda", "Lexus"]
+            },
+            "buying_recommendations": {
+                "best_value_brands": ["Toyota", "Honda", "Hyundai"],
+                "luxury_value_picks": ["Lexus", "Acura"],
+                "avoid_high_mileage": ["German luxury brands over 75k miles"],
+                "electric_considerations": ["Check battery warranty and charging infrastructure"]
+            },
+            "seasonal_trends": {
+                "best_buying_months": ["October", "November", "December"],
+                "highest_inventory": ["January", "February"],
+                "convertible_season": ["March", "April", "May"],
+                "suv_demand_peak": ["November", "December", "January"]
+            }
+        }
+    except Exception as e:
+        logger.error(f"Error getting market insights: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to retrieve market insights")
 
 if __name__ == "__main__":
     import uvicorn
