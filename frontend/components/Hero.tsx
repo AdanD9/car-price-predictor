@@ -26,8 +26,8 @@ const Hero = () => {
       </div>
       <div className="lg:w-full">
         <Image
-          src="https://images.unsplash.com/photo-1549924231-f129b911e442?q=80&w=2070&auto=format&fit=crop"
-          alt="Car Price Predictor AI Technology"
+          src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=2070&auto=format&fit=crop"
+          alt="Modern car dashboard with AI technology"
           className="w-full rounded-2xl shadow-2xl"
           priority={true}
           width={500}
