@@ -5,6 +5,7 @@ import StatisticsCard from './StatisticsCard';
 import BarChart from './BarChart';
 import PieChart from './PieChart';
 import LineChart from './LineChart';
+import DataSourcesInfo from './DataSourcesInfo';
 
 interface StatisticsData {
   summary: {
@@ -38,6 +39,8 @@ interface StatisticsData {
     percentage: number;
     avg_price: number;
   }>;
+  last_updated?: string;
+  data_sources?: string[];
 }
 
 interface TrendsData {
@@ -182,9 +185,24 @@ const StatisticsDashboard: React.FC = () => {
         <h1 className="text-4xl font-bold text-base-content mb-4">
           Car Market Statistics
         </h1>
-        <p className="text-lg text-base-content/70 max-w-2xl mx-auto">
+        <p className="text-lg text-base-content/70 max-w-2xl mx-auto mb-4">
           Comprehensive insights into the used car market based on millions of listings
         </p>
+
+        {/* Data Freshness Indicator */}
+        {statisticsData?.last_updated && (
+          <div className="flex items-center justify-center gap-2 text-sm text-base-content/60">
+            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+            <span>
+              Last updated: {new Date(statisticsData.last_updated).toLocaleString()}
+            </span>
+            {statisticsData.data_sources && (
+              <span className="ml-4">
+                Sources: {statisticsData.data_sources.join(', ')}
+              </span>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Summary Cards */}
@@ -240,6 +258,11 @@ const StatisticsDashboard: React.FC = () => {
           data={priceRangesChartData}
           height={400}
         />
+      </div>
+
+      {/* Data Sources Information */}
+      <div className="mb-12">
+        <DataSourcesInfo />
       </div>
     </div>
   );
