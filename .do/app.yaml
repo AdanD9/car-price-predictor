@@ -1,0 +1,68 @@
+name: carinsight-pro
+services:
+  # Frontend - Next.js Application
+  - name: frontend
+    source_dir: /frontend
+    github:
+      repo: AdanD9/car-price-predictor
+      branch: main
+    run_command: npm start
+    build_command: npm run build
+    environment_slug: node-js
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    http_port: 3000
+    routes:
+      - path: /
+    envs:
+      - key: NEXTAUTH_URL
+        value: ${_self.PUBLIC_URL}
+      - key: NEXT_PUBLIC_API_URL
+        value: ${backend.PUBLIC_URL}
+      - key: NEXTAUTH_SECRET
+        scope: RUN_AND_BUILD_TIME
+        type: SECRET
+      - key: GOOGLE_CLIENT_ID
+        scope: RUN_AND_BUILD_TIME
+        type: SECRET
+      - key: GOOGLE_CLIENT_SECRET
+        scope: RUN_AND_BUILD_TIME
+        type: SECRET
+      - key: MONGODB_URI
+        scope: RUN_AND_BUILD_TIME
+        type: SECRET
+      - key: RESEND_API_KEY
+        scope: RUN_AND_BUILD_TIME
+        type: SECRET
+      - key: EMAIL_SERVER_HOST
+        value: smtp.resend.com
+      - key: EMAIL_SERVER_PORT
+        value: "587"
+      - key: EMAIL_SERVER_USER
+        value: resend
+      - key: EMAIL_FROM
+        value: noreply@carinsight.com
+
+  # Backend - FastAPI Application
+  - name: backend
+    source_dir: /backend
+    github:
+      repo: AdanD9/car-price-predictor
+      branch: main
+    run_command: uvicorn main:app --host 0.0.0.0 --port 8080
+    environment_slug: python
+    instance_count: 1
+    instance_size_slug: basic-xs
+    http_port: 8080
+    routes:
+      - path: /api
+    envs:
+      - key: DATABASE_URL
+        value: sqlite:///./carinsight.db
+      - key: CORS_ORIGINS
+        value: ${frontend.PUBLIC_URL}
+      - key: VIN_DECODER_API_KEY
+        scope: RUN_AND_BUILD_TIME
+        type: SECRET
+      - key: VIN_DECODER_BASE_URL
+        value: https://api.vindecoder.eu/3.2
