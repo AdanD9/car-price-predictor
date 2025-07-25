@@ -75,5 +75,5 @@ cars_df.parquet
 used_cars_data.csv
 *.parquet
 *.csv
-backend/catboost_model.cbm
+# Removed catboost_model.cbm - no longer using ML model
 *.cbm

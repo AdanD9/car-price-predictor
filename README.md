@@ -80,7 +80,7 @@ car-price-predictor/
 │   ├── main.py             # API endpoints and ML model integration
 │   ├── requirements.txt    # Python dependencies
 │   ├── Dockerfile         # Backend container configuration
-│   └── catboost_model.cbm # Trained ML model
+│   └── main.py           # API with mock predictions
 ├── frontend/               # Next.js frontend
 │   ├── app/               # Next.js app directory
 │   ├── components/        # React components
@@ -263,7 +263,7 @@ console.log(`Predicted price: $${prediction.predicted_price}`);
    ```
 
 3. **Model Loading Issues**:
-   - Ensure `catboost_model.cbm` is in the backend directory
+   - No model files needed - uses lightweight mock predictions
    - Check file permissions and size
    - Verify Python dependencies are installed
 

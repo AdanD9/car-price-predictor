@@ -7,7 +7,7 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
     volumes:
-      - ./backend/catboost_model.cbm:/app/catboost_model.cbm:ro
+      # Removed catboost_model.cbm - using mock predictions
     networks:
       - app-network
     healthcheck:
