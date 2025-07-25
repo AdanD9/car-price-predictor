@@ -6,12 +6,11 @@ services:
     restart: unless-stopped
     environment:
       - PYTHONUNBUFFERED=1
-    volumes:
-      # Removed catboost_model.cbm - using mock predictions
+    # Removed volumes section - no model files needed
     networks:
       - app-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -21,7 +20,7 @@ services:
     restart: unless-stopped
     environment:
       - NODE_ENV=production
-      - NEXT_PUBLIC_API_URL=http://backend:8000
+      - NEXT_PUBLIC_API_URL=http://backend:8080
     depends_on:
       - backend
     networks:
