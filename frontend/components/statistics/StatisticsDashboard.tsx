@@ -122,13 +122,23 @@ const StatisticsDashboard: React.FC = () => {
     );
   }
 
-  // Prepare chart data
+  // Add safety checks for data structure
+  if (!statisticsData.summary || !statisticsData.popular_makes || !statisticsData.body_types ||
+      !trendsData.year_trends || !trendsData.price_ranges) {
+    return (
+      <div className="alert alert-error">
+        <span>Invalid statistics data structure. Please refresh the page.</span>
+      </div>
+    );
+  }
+
+  // Prepare chart data with safety checks
   const makesChartData = {
-    labels: statisticsData.popular_makes.slice(0, 8).map(item => item.make),
+    labels: statisticsData.popular_makes.slice(0, 8).map(item => item?.make || 'Unknown'),
     datasets: [
       {
         label: 'Number of Listings',
-        data: statisticsData.popular_makes.slice(0, 8).map(item => item.count),
+        data: statisticsData.popular_makes.slice(0, 8).map(item => item?.count || 0),
         backgroundColor: [
           '#3B82F6', '#EF4444', '#10B981', '#F59E0B',
           '#8B5CF6', '#EC4899', '#06B6D4', '#84CC16'
@@ -139,10 +149,10 @@ const StatisticsDashboard: React.FC = () => {
   };
 
   const bodyTypesChartData = {
-    labels: statisticsData.body_types.map(item => item.type),
+    labels: statisticsData.body_types.map(item => item?.type || 'Unknown'),
     datasets: [
       {
-        data: statisticsData.body_types.map(item => item.count),
+        data: statisticsData.body_types.map(item => item?.count || 0),
         backgroundColor: [
           '#3B82F6', '#EF4444', '#10B981', '#F59E0B',
           '#8B5CF6', '#EC4899', '#06B6D4', '#84CC16'
@@ -152,11 +162,11 @@ const StatisticsDashboard: React.FC = () => {
   };
 
   const yearTrendsChartData = {
-    labels: trendsData.year_trends.map(item => item.year.toString()),
+    labels: trendsData.year_trends.map(item => item?.year?.toString() || 'Unknown'),
     datasets: [
       {
         label: 'Average Price ($)',
-        data: trendsData.year_trends.map(item => item.avg_price),
+        data: trendsData.year_trends.map(item => item?.avg_price || 0),
         borderColor: '#3B82F6',
         backgroundColor: 'rgba(59, 130, 246, 0.1)',
         tension: 0.4,
@@ -166,11 +176,11 @@ const StatisticsDashboard: React.FC = () => {
   };
 
   const priceRangesChartData = {
-    labels: trendsData.price_ranges.map(item => item.range),
+    labels: trendsData.price_ranges.map(item => item?.range || 'Unknown'),
     datasets: [
       {
         label: 'Number of Listings',
-        data: trendsData.price_ranges.map(item => item.count),
+        data: trendsData.price_ranges.map(item => item?.count || 0),
         backgroundColor: '#10B981',
         borderWidth: 1,
       },
@@ -208,25 +218,25 @@ const StatisticsDashboard: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
         <StatisticsCard
           title="Total Listings"
-          value={statisticsData.summary.total_listings}
+          value={statisticsData.summary?.total_listings || 0}
           subtitle="Active car listings"
           icon="🚗"
         />
         <StatisticsCard
           title="Average Price"
-          value={`$${statisticsData.summary.average_price.toLocaleString()}`}
+          value={`$${(statisticsData.summary?.average_price || 0).toLocaleString()}`}
           subtitle="Market average"
           icon="💰"
         />
         <StatisticsCard
           title="Most Popular Make"
-          value={statisticsData.summary.most_popular_make}
+          value={statisticsData.summary?.most_popular_make || 'Unknown'}
           subtitle="Leading brand"
           icon="🏆"
         />
         <StatisticsCard
           title="Top Model"
-          value={statisticsData.summary.most_popular_model}
+          value={statisticsData.summary?.most_popular_model || 'Unknown'}
           subtitle="Best-selling model"
           icon="⭐"
         />
