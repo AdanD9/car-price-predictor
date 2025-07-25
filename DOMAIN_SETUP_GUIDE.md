@@ -14,7 +14,7 @@ For your business needs, **DigitalOcean App Platform** is the best choice:
 
 ### **✅ Why DigitalOcean Over Vercel:**
 - **Full Python Support**: Your FastAPI backend works perfectly
-- **AI Model Hosting**: Can handle your 50MB+ CatBoost model
+- **Service Hosting**: Reliable backend hosting
 - **Database Integration**: Built-in PostgreSQL
 - **Predictable Costs**: $24/month vs variable pricing
 - **Business Features**: Better for subscriptions/payments
@@ -22,7 +22,7 @@ For your business needs, **DigitalOcean App Platform** is the best choice:
 
 ### **❌ Vercel Limitations for Your Project:**
 - **No Native Python**: Would need major backend restructuring
-- **File Size Limits**: 50MB max (your model is larger)
+- **File Size Limits**: 50MB max (restrictive for some use cases)
 - **Function Timeouts**: 10-60 seconds (limits AI processing)
 - **Serverless Constraints**: Not ideal for ML models
 

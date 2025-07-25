@@ -109,7 +109,7 @@ You'll need to obtain these API keys:
 ## 🎯 Features Included
 
 ### **Core Services:**
-- 💰 **AI Price Predictions** - CatBoost model with 94.5% accuracy
+- 💰 **Price Predictions** - Smart estimation algorithm
 - 🔍 **VIN Lookup Service** - Decode vehicle information
 - 📊 **User Dashboard** - Track usage and history
 - 📈 **Market Analytics** - Automotive trends
