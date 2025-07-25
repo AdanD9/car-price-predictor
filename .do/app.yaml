@@ -41,7 +41,7 @@ services:
       - key: EMAIL_SERVER_USER
         value: resend
       - key: EMAIL_FROM
-        value: noreply@carinsight.com
+        value: noreply@carpricepredictor.com
 
   # Backend - FastAPI Application
   - name: backend

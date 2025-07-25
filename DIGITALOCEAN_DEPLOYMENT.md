@@ -35,7 +35,7 @@ GOOGLE_CLIENT_ID=your-google-oauth-client-id
 GOOGLE_CLIENT_SECRET=your-google-oauth-secret
 MONGODB_URI=your-mongodb-connection-string
 RESEND_API_KEY=your-resend-api-key
-EMAIL_FROM=noreply@yourdomain.com
+EMAIL_FROM=noreply@carpricepredictor.com
 ```
 
 **For Backend:**

@@ -3,10 +3,10 @@ import { ConfigProps } from "./types/config";
 
 const config = {
   // REQUIRED
-  appName: "Car Price Predictor",
+  appName: "CarInsight Pro",
   // REQUIRED: a short description of your app for SEO tags (can be overwritten)
   appDescription:
-    "Get instant, accurate car price predictions powered by AI. Our advanced machine learning model analyzes thousands of data points to give you the most reliable car valuation in seconds.",
+    "Complete automotive intelligence platform with AI-powered price predictions, VIN lookup, market analytics, and professional tools for dealers and consumers. Get instant, accurate car valuations with 94.5% accuracy.",
   // REQUIRED (no https://, not trailing slash at the end, just the naked domain)
   domainName: "carpricepredictor.com",
   crisp: {
