@@ -14,11 +14,11 @@ interface DataSource {
 interface DataSourcesData {
   sources: DataSource[];
   last_updated: string;
-  cache_duration: string;
-  data_quality: {
-    completeness: string;
-    accuracy: string;
-    timeliness: string;
+  cache_duration?: string;
+  data_quality?: {
+    completeness?: string;
+    accuracy?: string;
+    timeliness?: string;
   };
 }
 
@@ -75,6 +75,7 @@ const DataSourcesInfo: React.FC = () => {
   }
 
   const getTypeColor = (type: string) => {
+    if (!type) return 'badge-neutral';
     switch (type.toLowerCase()) {
       case 'government':
         return 'badge-primary';
@@ -82,12 +83,15 @@ const DataSourcesInfo: React.FC = () => {
         return 'badge-secondary';
       case 'industry':
         return 'badge-accent';
+      case 'commercial':
+        return 'badge-accent';
       default:
         return 'badge-neutral';
     }
   };
 
   const getQualityColor = (value: string) => {
+    if (!value) return 'text-base-content';
     if (value.toLowerCase().includes('high') || value.toLowerCase().includes('current')) {
       return 'text-success';
     }
@@ -109,20 +113,20 @@ const DataSourcesInfo: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <div className="stat bg-base-200 rounded-lg">
             <div className="stat-title">Completeness</div>
-            <div className={`stat-value text-lg ${getQualityColor(dataSourcesInfo.data_quality.completeness)}`}>
-              {dataSourcesInfo.data_quality.completeness}
+            <div className={`stat-value text-lg ${getQualityColor(dataSourcesInfo.data_quality?.completeness)}`}>
+              {dataSourcesInfo.data_quality?.completeness || 'N/A'}
             </div>
           </div>
           <div className="stat bg-base-200 rounded-lg">
             <div className="stat-title">Accuracy</div>
-            <div className={`stat-value text-lg ${getQualityColor(dataSourcesInfo.data_quality.accuracy)}`}>
-              {dataSourcesInfo.data_quality.accuracy}
+            <div className={`stat-value text-lg ${getQualityColor(dataSourcesInfo.data_quality?.accuracy)}`}>
+              {dataSourcesInfo.data_quality?.accuracy || 'N/A'}
             </div>
           </div>
           <div className="stat bg-base-200 rounded-lg">
             <div className="stat-title">Timeliness</div>
-            <div className={`stat-value text-lg ${getQualityColor(dataSourcesInfo.data_quality.timeliness)}`}>
-              {dataSourcesInfo.data_quality.timeliness}
+            <div className={`stat-value text-lg ${getQualityColor(dataSourcesInfo.data_quality?.timeliness)}`}>
+              {dataSourcesInfo.data_quality?.timeliness || 'N/A'}
             </div>
           </div>
         </div>
@@ -169,10 +173,10 @@ const DataSourcesInfo: React.FC = () => {
         <div className="flex items-center justify-between text-sm text-base-content/60">
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-            <span>Cache Duration: {dataSourcesInfo.cache_duration}</span>
+            <span>Cache Duration: {dataSourcesInfo.cache_duration || 'N/A'}</span>
           </div>
           <div>
-            Last Updated: {new Date(dataSourcesInfo.last_updated).toLocaleString()}
+            Last Updated: {dataSourcesInfo.last_updated ? new Date(dataSourcesInfo.last_updated).toLocaleString() : 'N/A'}
           </div>
         </div>
       </div>

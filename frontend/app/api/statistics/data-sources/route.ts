@@ -35,17 +35,12 @@ export async function GET() {
       }
     ],
     data_quality: {
-      accuracy_rate: 98.3,
-      coverage_percentage: 95.7,
-      freshness_score: 92.1,
-      total_records: 2847392
+      completeness: "95.7%",
+      accuracy: "98.3%",
+      timeliness: "High"
     },
-    last_updated: new Date().toISOString(),
-    update_schedule: {
-      statistics: "Every 6 hours",
-      trends: "Daily at 2:00 AM EST",
-      market_data: "Real-time streaming"
-    }
+    cache_duration: "6 hours",
+    last_updated: new Date().toISOString()
   };
 
   return NextResponse.json(mockData);
