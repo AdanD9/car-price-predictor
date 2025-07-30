@@ -3,6 +3,7 @@ import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import CarPredictionForm from "@/components/CarPredictionForm";
 import FeaturesGrid from "@/components/FeaturesGrid";
+import Pricing from "@/components/Pricing";
 import StatisticsPreview from "@/components/StatisticsPreview";
 import FAQ from "@/components/FAQ";
 import CTA from "@/components/CTA";
@@ -27,6 +28,7 @@ export default function Home(): JSX.Element {
         <Hero />
         <CarPredictionForm />
         <FeaturesGrid />
+        <Pricing />
         <StatisticsPreview />
         <FAQ />
         <CTA />

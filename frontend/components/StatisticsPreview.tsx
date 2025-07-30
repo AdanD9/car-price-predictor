@@ -18,12 +18,15 @@ const StatisticsPreview: React.FC = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        // Use local API endpoint for statistics
-        const response = await fetch('/api/statistics/overview');
-        
+        // Use backend API endpoint for statistics
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+        const response = await fetch(`${apiUrl}/statistics/overview`);
+
         if (response.ok) {
           const data = await response.json();
           setStats(data.summary);
+        } else {
+          console.error('Failed to fetch statistics:', response.status, response.statusText);
         }
       } catch (error) {
         console.error('Failed to fetch statistics:', error);

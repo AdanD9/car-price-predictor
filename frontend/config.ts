@@ -23,44 +23,68 @@ const config = {
         priceId:
           process.env.NODE_ENV === "development"
             ? "price_1Niyy5AxyNprDp7iZIqEyD2h"
-            : "price_456",
+            : "price_basic",
         //  REQUIRED - Name of the plan, displayed on the pricing page
-        name: "Starter",
+        name: "Basic",
         // A friendly description of the plan, displayed on the pricing page. Tip: explain why this plan and not others
-        description: "Perfect for small projects",
+        description: "Perfect for individual car buyers and sellers",
         // The price you want to display, the one user will be charged on Stripe.
-        price: 99,
+        price: 9.99,
         // If you have an anchor price (i.e. $29) that you want to display crossed out, put it here. Otherwise, leave it empty
-        priceAnchor: 149,
+        priceAnchor: 19.99,
         features: [
           {
-            name: "NextJS boilerplate",
+            name: "10 price predictions per month",
           },
-          { name: "User oauth" },
-          { name: "Database" },
-          { name: "Emails" },
+          { name: "Basic market statistics" },
+          { name: "VIN lookup (5 per month)" },
+          { name: "Email support" },
+          { name: "Mobile app access" },
         ],
       },
       {
         priceId:
           process.env.NODE_ENV === "development"
             ? "price_1O5KtcAxyNprDp7iftKnrrpw"
-            : "price_456",
+            : "price_pro",
         // This plan will look different on the pricing page, it will be highlighted. You can only have one plan with isFeatured: true
         isFeatured: true,
-        name: "Advanced",
-        description: "You need more power",
-        price: 149,
-        priceAnchor: 299,
+        name: "Professional",
+        description: "Ideal for dealers and automotive professionals",
+        price: 29.99,
+        priceAnchor: 49.99,
         features: [
           {
-            name: "Agentic SaaS app NextJS boilerplate",
+            name: "Unlimited price predictions",
           },
-          { name: "User oauth" },
-          { name: "Database" },
-          { name: "Emails" },
-          { name: "1 year of updates" },
-          { name: "24/7 support" },
+          { name: "Advanced market analytics" },
+          { name: "Unlimited VIN lookups" },
+          { name: "Bulk pricing tools" },
+          { name: "API access" },
+          { name: "Priority support" },
+          { name: "Custom reports" },
+        ],
+      },
+      {
+        priceId:
+          process.env.NODE_ENV === "development"
+            ? "price_1O5KtcAxyNprDp7iftKnrrpw"
+            : "price_enterprise",
+        name: "Enterprise",
+        description: "For large dealerships and automotive businesses",
+        price: 99.99,
+        priceAnchor: 149.99,
+        features: [
+          {
+            name: "Everything in Professional",
+          },
+          { name: "White-label solution" },
+          { name: "Custom integrations" },
+          { name: "Dedicated account manager" },
+          { name: "Advanced analytics dashboard" },
+          { name: "24/7 phone support" },
+          { name: "Custom ML model training" },
+          { name: "Multi-location support" },
         ],
       },
     ],

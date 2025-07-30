@@ -57,39 +57,60 @@ const TOS = () => {
           className="leading-relaxed whitespace-pre-wrap"
           style={{ fontFamily: "sans-serif" }}
         >
-          {`Last Updated: May 5, 2025
+          {`Last Updated: July 29, 2025
 
-Welcome to FeNAgO!
+Welcome to Car Price Predictor!
 
-These Terms of Service ("Terms") govern your use of the FeNAgO website at https://fenago.com ("Website") and the services provided by FeNAgO. By using our Website and services, you agree to these Terms.
+These Terms of Service ("Terms") govern your use of the Car Price Predictor website at https://carpricepredictor.com ("Website") and the services provided by Car Price Predictor. By using our Website and services, you agree to these Terms.
 
-1. Description of FeNAgO
+1. Description of Car Price Predictor
 
-FeNAgO is a platform that offers a Next.js agentic SaaS boilerplate to assist entrepreneurs in building AI-powered applications more efficiently.
+Car Price Predictor is an AI-powered platform that provides car valuation services, market statistics, VIN lookup functionality, and automotive market insights. Our service uses machine learning algorithms to analyze market data and provide price predictions for vehicles.
 
-2. Ownership and Usage Rights
+2. Service Usage and Limitations
 
-When you purchase a package from FeNAgO, you gain the right to download and use the code provided for creating applications. You own the code you create but do not have the right to resell it. We offer a full refund within 7 days of purchase, as specified in our refund policy.
+2.1 Accuracy Disclaimer: While our AI model strives for high accuracy, all price predictions are estimates based on available market data and should be used for reference purposes only. Actual vehicle values may vary based on condition, location, market fluctuations, and other factors not captured in our model.
 
-3. User Data and Privacy
+2.2 VIN Lookup: Our VIN lookup service provides vehicle specifications based on publicly available data. We do not guarantee the completeness or accuracy of VIN-decoded information.
 
-We collect and store user data, including name, email, and payment information, as necessary to provide our services. For details on how we handle your data, please refer to our Privacy Policy at https://fenago.com/privacy-policy.
+2.3 Subscription Plans: Different subscription tiers provide varying levels of access to our services, including prediction limits, VIN lookup quotas, and advanced features as outlined in your chosen plan.
 
-4. Non-Personal Data Collection
+3. User Responsibilities
 
-We use web cookies to collect non-personal data for the purpose of improving our services and user experience.
+3.1 You agree to provide accurate information when using our services.
+3.2 You will not attempt to reverse engineer, copy, or redistribute our proprietary algorithms or data.
+3.3 You will not use our service for any illegal or unauthorized purposes.
+3.4 Commercial users must comply with any additional terms specific to their subscription level.
 
-5. Governing Law
+4. Data Collection and Privacy
 
-These Terms are governed by the laws of France.
+We collect and store user data including name, email, payment information, and vehicle search history as necessary to provide our services. We also collect non-personal data through web cookies to improve user experience. For complete details on data handling, please refer to our Privacy Policy at https://carpricepredictor.com/privacy-policy.
 
-6. Updates to the Terms
+5. Intellectual Property
 
-We may update these Terms from time to time. Users will be notified of any changes via email.
+All content, algorithms, models, and data provided through our service are proprietary to Car Price Predictor. Users may not reproduce, distribute, or create derivative works from our content without explicit written permission.
 
-For any questions or concerns regarding these Terms of Service, please contact us at support@fenago.com.
+6. Limitation of Liability
 
-Thank you for using FeNAgO!`}
+Car Price Predictor provides information services only. We are not responsible for any financial decisions made based on our predictions. Users assume all risks associated with vehicle purchases, sales, or valuations based on our estimates.
+
+7. Refund Policy
+
+We offer refunds within 7 days of subscription purchase. Refunds are processed according to our refund policy available on our website.
+
+8. Governing Law
+
+These Terms are governed by the laws of the United States.
+
+9. Updates to Terms
+
+We may update these Terms periodically. Users will be notified of significant changes via email. Continued use of our service after changes constitutes acceptance of new terms.
+
+10. Contact Information
+
+For questions regarding these Terms of Service, please contact us at support@carpricepredictor.com.
+
+Thank you for using Car Price Predictor!`}
         </pre>
       </div>
     </main>

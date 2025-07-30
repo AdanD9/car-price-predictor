@@ -22,8 +22,8 @@ const links: {
     label: "Market Stats",
   },
   {
-    href: "/#features",
-    label: "How It Works",
+    href: "/#pricing",
+    label: "Pricing",
   },
   {
     href: "/#faq",

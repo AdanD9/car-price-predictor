@@ -49,20 +49,79 @@ interface CarFormData {
 }
 
 const CarPredictionForm = () => {
+  const [activeTab, setActiveTab] = useState<'prediction' | 'vin'>('prediction');
+  const [vinNumber, setVinNumber] = useState('');
+  const [vinLoading, setVinLoading] = useState(false);
+
   const [formData, setFormData] = useState<CarFormData>({
     make_name: '',
     model_name: '',
     year: 2020,
     mileage: 50000,
   });
-  
+
   const [prediction, setPrediction] = useState<PredictionResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [showAdvanced, setShowAdvanced] = useState(false);
 
+  const handleVinLookup = async () => {
+    if (!vinNumber || vinNumber.length !== 17) {
+      toast.error('Please enter a valid 17-character VIN number');
+      return;
+    }
+
+    setVinLoading(true);
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+      const response = await fetch(`${apiUrl}/vin/lookup`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ vin: vinNumber }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.detail || 'Failed to decode VIN');
+      }
+
+      const vinData = await response.json();
+
+      if (!vinData.success) {
+        toast.warning(vinData.message || 'VIN decoded with limited information');
+      } else {
+        toast.success(vinData.message || 'VIN decoded successfully!');
+      }
+
+      // Update form data with VIN information
+      setFormData(prev => ({
+        ...prev,
+        make_name: vinData.make_name || '',
+        model_name: vinData.model_name || '',
+        year: vinData.year || 2020,
+        body_type: vinData.body_type || '',
+        fuel_type: vinData.fuel_type || '',
+        transmission: vinData.transmission || '',
+        engine_displacement: vinData.engine_displacement || 0,
+        engine_cylinders: vinData.engine_cylinders || '',
+        mileage: prev.mileage, // Keep existing mileage
+      }));
+
+      setActiveTab('prediction');
+      toast.info('Please verify the details and add mileage before getting prediction.');
+    } catch (error) {
+      console.error('VIN lookup error:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Failed to decode VIN. Please try again.';
+      toast.error(errorMessage);
+    } finally {
+      setVinLoading(false);
+    }
+  };
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
-    
+
     if (type === 'checkbox') {
       const checked = (e.target as HTMLInputElement).checked;
       setFormData(prev => ({
@@ -140,7 +199,103 @@ const CarPredictionForm = () => {
         <div className="grid lg:grid-cols-2 gap-12 items-start">
           {/* Form Section */}
           <div className="bg-base-200 rounded-2xl p-8">
-            <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Tabs */}
+            <div className="tabs tabs-boxed mb-6">
+              <button
+                type="button"
+                className={`tab ${activeTab === 'prediction' ? 'tab-active' : ''}`}
+                onClick={() => setActiveTab('prediction')}
+              >
+                Price Prediction
+              </button>
+              <button
+                type="button"
+                className={`tab ${activeTab === 'vin' ? 'tab-active' : ''}`}
+                onClick={() => setActiveTab('vin')}
+              >
+                VIN Lookup
+              </button>
+            </div>
+
+            {/* VIN Lookup Tab */}
+            {activeTab === 'vin' && (
+              <div className="space-y-6">
+                <div className="text-center mb-6">
+                  <h3 className="text-xl font-bold mb-2">Decode Your VIN</h3>
+                  <p className="text-base-content/70">
+                    Enter your 17-character VIN number to automatically populate vehicle details
+                  </p>
+                </div>
+
+                <div>
+                  <label className="label">
+                    <span className="label-text font-semibold">VIN Number *</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={vinNumber}
+                    onChange={(e) => setVinNumber(e.target.value.toUpperCase())}
+                    placeholder="Enter 17-character VIN"
+                    className="input input-bordered w-full"
+                    maxLength={17}
+                  />
+                  <div className="label">
+                    <span className="label-text-alt">
+                      {vinNumber.length}/17 characters
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex gap-4">
+                  <button
+                    type="button"
+                    onClick={handleVinLookup}
+                    disabled={vinLoading || vinNumber.length !== 17}
+                    className="btn btn-primary flex-1"
+                  >
+                    {vinLoading ? (
+                      <>
+                        <span className="loading loading-spinner loading-sm"></span>
+                        Decoding VIN...
+                      </>
+                    ) : (
+                      'Decode VIN'
+                    )}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('prediction')}
+                    className="btn btn-outline"
+                  >
+                    ← Go Back
+                  </button>
+                </div>
+
+                <div className="alert alert-info">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="stroke-current shrink-0 w-6 h-6">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
+                  <div className="text-sm">
+                    VIN lookup will automatically fill in your vehicle's make, model, year, and other specifications.
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Price Prediction Tab */}
+            {activeTab === 'prediction' && (
+              <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Go Back Button */}
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-xl font-bold">Vehicle Details</h3>
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('vin')}
+                    className="btn btn-outline btn-sm"
+                  >
+                    ← Go Back
+                  </button>
+                </div>
               {/* Required Fields */}
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
@@ -411,7 +566,8 @@ const CarPredictionForm = () => {
                   'Get Price Prediction'
                 )}
               </button>
-            </form>
+              </form>
+            )}
           </div>
 
           {/* Results Section */}

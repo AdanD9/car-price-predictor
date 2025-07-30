@@ -5,6 +5,7 @@ import StatisticsCard from './StatisticsCard';
 import BarChart from './BarChart';
 import PieChart from './PieChart';
 import LineChart from './LineChart';
+import InteractiveModelsChart from './InteractiveModelsChart';
 import DataSourcesInfo from './DataSourcesInfo';
 
 interface StatisticsData {
@@ -73,10 +74,11 @@ const StatisticsDashboard: React.FC = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        // Use local API endpoints for statistics data
+        // Use backend API endpoints for statistics data
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
         const [statsResponse, trendsResponse] = await Promise.all([
-          fetch('/api/statistics/overview'),
-          fetch('/api/statistics/trends')
+          fetch(`${apiUrl}/statistics/overview`),
+          fetch(`${apiUrl}/statistics/trends`)
         ]);
 
         if (!statsResponse.ok || !trendsResponse.ok) {
@@ -90,6 +92,7 @@ const StatisticsDashboard: React.FC = () => {
         setTrendsData(trendsData);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred');
+        console.error('Statistics fetch error:', err);
       } finally {
         setLoading(false);
       }
@@ -187,6 +190,20 @@ const StatisticsDashboard: React.FC = () => {
     ],
   };
 
+  // Prepare interactive models chart data
+  const interactiveModelsData = statisticsData.popular_makes.map(make => ({
+    make: make.make,
+    models: statisticsData.popular_models
+      .filter(model => model.make === make.make)
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 10)
+      .map(model => ({
+        model: model.model,
+        count: model.count,
+        avg_price: model.avg_price
+      }))
+  })).filter(make => make.models.length > 0);
+
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Header */}
@@ -267,6 +284,11 @@ const StatisticsDashboard: React.FC = () => {
           data={priceRangesChartData}
           height={400}
         />
+      </div>
+
+      {/* Interactive Models Chart */}
+      <div className="mb-12">
+        <InteractiveModelsChart data={interactiveModelsData} />
       </div>
 
       {/* Data Sources Information */}

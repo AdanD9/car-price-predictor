@@ -7,6 +7,7 @@ import logging
 from datetime import datetime
 import os
 import random
+import httpx
 from data_service import get_live_statistics, live_data_service
 
 # Configure logging
@@ -135,6 +136,22 @@ class CarPredictionResponse(BaseModel):
     predicted_price: float = Field(..., description="Predicted car price in USD")
     confidence_interval: dict = Field(..., description="Price range estimate")
     model_info: dict = Field(..., description="Model performance metrics")
+
+class VinLookupRequest(BaseModel):
+    vin: str = Field(..., description="17-character VIN number", min_length=17, max_length=17)
+
+class VinLookupResponse(BaseModel):
+    vin: str = Field(..., description="VIN number")
+    make_name: str = Field(..., description="Vehicle make")
+    model_name: str = Field(..., description="Vehicle model")
+    year: int = Field(..., description="Model year")
+    body_type: Optional[str] = Field(None, description="Body type")
+    fuel_type: Optional[str] = Field(None, description="Fuel type")
+    transmission: Optional[str] = Field(None, description="Transmission type")
+    engine_displacement: Optional[float] = Field(None, description="Engine displacement in liters")
+    engine_cylinders: Optional[str] = Field(None, description="Number of cylinders")
+    success: bool = Field(..., description="Whether VIN lookup was successful")
+    message: str = Field(..., description="Status message")
     
 # Removed get_season function - no longer needed
 
@@ -195,6 +212,97 @@ async def predict_car_price(request: CarPredictionRequest):
     except Exception as e:
         logger.error(f"Prediction error: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Prediction failed: {str(e)}")
+
+@app.post("/vin/lookup", response_model=VinLookupResponse)
+async def lookup_vin(request: VinLookupRequest):
+    """
+    Lookup vehicle information by VIN using NHTSA API
+    """
+    try:
+        vin = request.vin.upper().strip()
+
+        # Validate VIN format (basic check)
+        if len(vin) != 17:
+            raise HTTPException(status_code=400, detail="VIN must be exactly 17 characters")
+
+        # Use NHTSA VIN decoder API
+        async with httpx.AsyncClient() as client:
+            url = f"https://vpic.nhtsa.dot.gov/api/vehicles/decodevin/{vin}?format=json"
+            response = await client.get(url, timeout=10.0)
+            response.raise_for_status()
+
+            data = response.json()
+            results = data.get('Results', [])
+
+            # Extract relevant information
+            vin_data = {}
+            for result in results:
+                variable = result.get('Variable', '')
+                value = result.get('Value', '')
+
+                if value and value != 'Not Applicable' and value != '':
+                    if variable == 'Make':
+                        vin_data['make_name'] = value
+                    elif variable == 'Model':
+                        vin_data['model_name'] = value
+                    elif variable == 'Model Year':
+                        try:
+                            vin_data['year'] = int(value)
+                        except (ValueError, TypeError):
+                            pass
+                    elif variable == 'Body Class':
+                        vin_data['body_type'] = value
+                    elif variable == 'Fuel Type - Primary':
+                        vin_data['fuel_type'] = value
+                    elif variable == 'Transmission Style':
+                        vin_data['transmission'] = value
+                    elif variable == 'Displacement (L)':
+                        try:
+                            vin_data['engine_displacement'] = float(value)
+                        except (ValueError, TypeError):
+                            pass
+                    elif variable == 'Engine Number of Cylinders':
+                        vin_data['engine_cylinders'] = value
+
+            # Check if we got essential information
+            if not vin_data.get('make_name') or not vin_data.get('model_name'):
+                return VinLookupResponse(
+                    vin=vin,
+                    make_name=vin_data.get('make_name', 'Unknown'),
+                    model_name=vin_data.get('model_name', 'Unknown'),
+                    year=vin_data.get('year', 2020),
+                    body_type=vin_data.get('body_type'),
+                    fuel_type=vin_data.get('fuel_type'),
+                    transmission=vin_data.get('transmission'),
+                    engine_displacement=vin_data.get('engine_displacement'),
+                    engine_cylinders=vin_data.get('engine_cylinders'),
+                    success=False,
+                    message="VIN decoded but essential information missing. Please verify VIN and enter details manually."
+                )
+
+            return VinLookupResponse(
+                vin=vin,
+                make_name=vin_data['make_name'],
+                model_name=vin_data['model_name'],
+                year=vin_data.get('year', 2020),
+                body_type=vin_data.get('body_type'),
+                fuel_type=vin_data.get('fuel_type'),
+                transmission=vin_data.get('transmission'),
+                engine_displacement=vin_data.get('engine_displacement'),
+                engine_cylinders=vin_data.get('engine_cylinders'),
+                success=True,
+                message="VIN decoded successfully"
+            )
+
+    except httpx.TimeoutException:
+        logger.error(f"VIN lookup timeout for VIN: {vin}")
+        raise HTTPException(status_code=408, detail="VIN lookup service timeout. Please try again.")
+    except httpx.HTTPError as e:
+        logger.error(f"VIN lookup HTTP error for VIN {vin}: {str(e)}")
+        raise HTTPException(status_code=503, detail="VIN lookup service unavailable. Please try again later.")
+    except Exception as e:
+        logger.error(f"VIN lookup error for VIN {vin}: {str(e)}")
+        raise HTTPException(status_code=500, detail="VIN lookup failed. Please verify VIN and try again.")
 
 @app.get("/models/info")
 async def get_model_info():
