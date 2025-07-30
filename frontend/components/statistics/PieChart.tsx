@@ -14,24 +14,36 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 interface PieChartProps {
   title: string;
   data: {
-    labels: string[];
-    datasets: {
-      data: number[];
-      backgroundColor: string[];
-      borderColor?: string[];
-      borderWidth?: number;
-    }[];
-  };
+    name: string;
+    value: number;
+    percentage?: number;
+  }[];
   options?: any;
   height?: number;
 }
 
-const PieChart: React.FC<PieChartProps> = ({ 
-  title, 
-  data, 
-  options = {}, 
-  height = 400 
+const PieChart: React.FC<PieChartProps> = ({
+  title,
+  data,
+  options = {},
+  height = 400
 }) => {
+  const colors = [
+    '#3B82F6', '#EF4444', '#10B981', '#F59E0B', '#8B5CF6',
+    '#EC4899', '#06B6D4', '#84CC16', '#F97316', '#6366F1'
+  ];
+
+  const chartData = {
+    labels: data.map(item => item.name),
+    datasets: [
+      {
+        data: data.map(item => item.value),
+        backgroundColor: colors.slice(0, data.length),
+        borderColor: colors.slice(0, data.length).map(color => color),
+        borderWidth: 2,
+      },
+    ],
+  };
   const defaultOptions = {
     responsive: true,
     maintainAspectRatio: false,
@@ -67,11 +79,10 @@ const PieChart: React.FC<PieChartProps> = ({
   };
 
   return (
-    <div className="card bg-base-100 shadow-xl">
-      <div className="card-body">
-        <div style={{ height: `${height}px` }}>
-          <Pie data={data} options={defaultOptions} />
-        </div>
+    <div>
+      <h3 className="text-lg font-bold mb-4">{title}</h3>
+      <div style={{ height: `${height}px` }}>
+        <Pie data={chartData} options={defaultOptions} />
       </div>
     </div>
   );

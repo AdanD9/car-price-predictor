@@ -1,10 +1,8 @@
 import { Suspense, ReactNode } from 'react';
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
-import CarPredictionForm from "@/components/CarPredictionForm";
-import FeaturesGrid from "@/components/FeaturesGrid";
+import TabbedInterface from "@/components/TabbedInterface";
 import Pricing from "@/components/Pricing";
-import StatisticsPreview from "@/components/StatisticsPreview";
 import FAQ from "@/components/FAQ";
 import CTA from "@/components/CTA";
 import Footer from "@/components/Footer";
@@ -26,10 +24,8 @@ export default function Home(): JSX.Element {
       <main>
         {/* Car Price Predictor - AI-powered car valuation platform */}
         <Hero />
-        <CarPredictionForm />
-        <FeaturesGrid />
+        <TabbedInterface />
         <Pricing />
-        <StatisticsPreview />
         <FAQ />
         <CTA />
       </main>

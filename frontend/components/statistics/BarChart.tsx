@@ -24,25 +24,33 @@ ChartJS.register(
 interface BarChartProps {
   title: string;
   data: {
-    labels: string[];
-    datasets: {
-      label: string;
-      data: number[];
-      backgroundColor?: string | string[];
-      borderColor?: string | string[];
-      borderWidth?: number;
-    }[];
-  };
+    name: string;
+    value: number;
+    price?: number;
+  }[];
   options?: any;
   height?: number;
 }
 
-const BarChart: React.FC<BarChartProps> = ({ 
-  title, 
-  data, 
-  options = {}, 
-  height = 400 
+const BarChart: React.FC<BarChartProps> = ({
+  title,
+  data,
+  options = {},
+  height = 400
 }) => {
+  const chartData = {
+    labels: data.map(item => item.name),
+    datasets: [
+      {
+        label: 'Count',
+        data: data.map(item => item.value),
+        backgroundColor: 'rgba(59, 130, 246, 0.8)',
+        borderColor: 'rgba(59, 130, 246, 1)',
+        borderWidth: 1,
+      },
+    ],
+  };
+
   const defaultOptions = {
     responsive: true,
     maintainAspectRatio: false,
@@ -76,11 +84,10 @@ const BarChart: React.FC<BarChartProps> = ({
   };
 
   return (
-    <div className="card bg-base-100 shadow-xl">
-      <div className="card-body">
-        <div style={{ height: `${height}px` }}>
-          <Bar data={data} options={defaultOptions} />
-        </div>
+    <div>
+      <h3 className="text-lg font-bold mb-4">{title}</h3>
+      <div style={{ height: `${height}px` }}>
+        <Bar data={chartData} options={defaultOptions} />
       </div>
     </div>
   );
