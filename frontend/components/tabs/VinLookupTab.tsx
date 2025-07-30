@@ -32,7 +32,7 @@ const VinLookupTab = () => {
 
     setLoading(true);
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.carpricepredictor.com';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
       const response = await fetch(`${apiUrl}/vin/lookup`, {
         method: 'POST',
         headers: {

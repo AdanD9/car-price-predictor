@@ -93,7 +93,7 @@ const PricePredictorTab = () => {
     setLoading(true);
     
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.carpricepredictor.com';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
       const response = await fetch(`${apiUrl}/predict`, {
         method: 'POST',
         headers: {
